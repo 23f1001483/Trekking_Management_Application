@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Search - Alpitude</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="inner-page">
+
+  <nav class="navbar navbar-expand navbar-dark topbar">
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center gap-2" href="/admin">
+        <img src="/static/alpitude.svg" alt="logo" class="brand-logo">
+        <span class="fw-bold">Alpitude</span>
+      </a>
+      <div class="navbar-nav">
+        <a class="nav-link" href="/admin">Dashboard</a>
+        <a class="nav-link" href="/admin/treks">Treks</a>
+        <a class="nav-link" href="/admin/staff">Staff</a>
+        <a class="nav-link" href="/admin/users">Users</a>
+        <a class="nav-link" href="/admin/bookings">Bookings</a>
+        <a class="nav-link active" href="/admin/search">Search</a>
+      </div>
+      <div class="ms-auto d-flex align-items-center gap-3">
+        <span class="navbar-text text-white">Hi, {{ session.get('username') }}</span>
+        <a class="btn btn-outline-light btn-sm" href="/logout">Logout</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container my-4">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endwith %}
+
+    <h3 class="mb-3">Search</h3>
+
+    <div class="page-box mb-4">
+      <!-- method GET: the search words appear in the URL, nothing in the database changes -->
+      <form action="/admin/search" method="get" class="row g-2">
+        <div class="col-md-6">
+          <input type="text" class="form-control" name="query" placeholder="Type to search..."
+                 value="{{ query }}" required>
+        </div>
+        <div class="col-md-3">
+          <select class="form-select" name="category">
+            <option value="treks" {% if category == 'treks' %}selected{% endif %}>Treks</option>
+            <option value="users" {% if category == 'users' %}selected{% endif %}>Users</option>
+            <option value="staff" {% if category == 'staff' %}selected{% endif %}>Staff</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <input type="submit" class="btn btn-success w-100" value="Search">
+        </div>
+      </form>
+    </div>
+
+    {% if query != "" %}
+    <div class="page-box">
+      <h5>Results for "{{ query }}"</h5>
+
+      {% if category == 'treks' %}
+      <table class="table table-striped mb-0">
+        <thead>
+          <tr><th>Name</th><th>Location</th><th>Difficulty</th><th>Slots</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          {% for trek in results %}
+          <tr>
+            <td>{{ trek.name }}</td>
+            <td>{{ trek.location }}</td>
+            <td>{{ trek.difficulty }}</td>
+            <td>{{ trek.available_slots }}</td>
+            <td>{{ trek.status }}</td>
+          </tr>
+          {% else %}
+          <tr><td colspan="5">No matching treks found.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <table class="table table-striped mb-0">
+        <thead>
+          <tr><th>Username</th><th>Email</th><th>Contact</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          {% for person in results %}
+          <tr>
+            <td>{{ person.username }}</td>
+            <td>{{ person.email }}</td>
+            <td>{{ person.contact_number }}</td>
+            <td>{% if person.is_blacklisted %}Blacklisted{% else %}Active{% endif %}</td>
+          </tr>
+          {% else %}
+          <tr><td colspan="4">No matching people found.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% endif %}
+    </div>
+    {% endif %}
+
+  </div>
+</body>
+</html>
