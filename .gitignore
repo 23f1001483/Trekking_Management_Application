@@ -2,4 +2,5 @@
 __pycache__/
 *.pyc
 
-
+# the SQLite database is created automatically on run, so we don't track it
+instance/
