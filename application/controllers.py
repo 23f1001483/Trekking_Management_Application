@@ -44,6 +44,11 @@ def signup():
         password = request.form.get("password")
         contact_number = request.form.get("contact_number")
         role = request.form.get("role")
+        # server-side check: no account with empty details
+        # (the model's nullable=False only blocks NULL, an empty string "" would still pass)
+        if username == "" or email == "" or password == "":
+            flash("Please fill in all the fields.", "danger")
+            return redirect("/signup")
         if User.query.filter_by(username=username).first():
             flash("This username is already taken.", "danger")
             return redirect("/signup")
