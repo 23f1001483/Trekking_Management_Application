@@ -2,7 +2,6 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 
-#Table 1: User (admin, staff and trekkers ALL live in this one table):
 class User(db.Model):
     __tablename__ = 'user'
     id = db.Column(db.Integer(), primary_key=True)
@@ -10,13 +9,12 @@ class User(db.Model):
     email = db.Column(db.String(), unique=True, nullable=False)
     password = db.Column(db.String(), nullable=False)
     role = db.Column(db.String(), nullable=False, default='user')
-    is_approved = db.Column(db.Boolean(), nullable=False, default=False)    # staff need admin approval before they can log in
-    is_blacklisted = db.Column(db.Boolean(), nullable=False, default=False) # admin can block an account
-    contact_number = db.Column(db.String(), nullable=True)                  # phone number (optional)
-    bookings = db.relationship('Booking', backref='user')                   # One user (a trekker) can have many bookings. [One to Many]
-    assigned_treks = db.relationship('Trek', backref='staff')               #One user (a staff member) can be assigned many treks.[One to Many]
+    is_approved = db.Column(db.Boolean(), nullable=False, default=False)
+    is_blacklisted = db.Column(db.Boolean(), nullable=False, default=False)
+    contact_number = db.Column(db.String(), nullable=True)
+    bookings = db.relationship('Booking', backref='user')
+    assigned_treks = db.relationship('Trek', backref='staff')
 
-#Table 2: Trek:
 class Trek(db.Model):
     __tablename__ = 'trek'
     id = db.Column(db.Integer(), primary_key=True)
@@ -29,15 +27,14 @@ class Trek(db.Model):
     start_date = db.Column(db.String(), nullable=False)
     end_date = db.Column(db.String(), nullable=False)
     description = db.Column(db.String(), nullable=False)
-    staff_id = db.Column(db.Integer(), db.ForeignKey('user.id'), nullable=True) # nullable=True so a trek can exist before the admin assigns a staff member.
-    bookings = db.relationship('Booking', backref='trek')                       # One trek can have many bookings.
+    staff_id = db.Column(db.Integer(), db.ForeignKey('user.id'), nullable=True) 
+    bookings = db.relationship('Booking', backref='trek')
 
 
-#Table 3: Booking (one user booking one trek)
 class Booking(db.Model):
     __tablename__ = 'booking'
     id = db.Column(db.Integer(), primary_key=True)
-    payment_status = db.Column(db.Boolean(), nullable=False)
+    payment_status = db.Column(db.Boolean(), nullable=False, default=True)
     user_id = db.Column(db.Integer(), db.ForeignKey('user.id'), nullable=False) 
     trek_id = db.Column(db.Integer(), db.ForeignKey('trek.id'), nullable=False) 
     booking_date = db.Column(db.String(), nullable=False)                       
