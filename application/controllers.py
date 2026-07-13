@@ -339,6 +339,14 @@ def profile():
         return redirect("/login")
     current_user = User.query.get(session.get("user_id"))
     if request.method == 'POST':
+        # change username, but only if the new one is not already taken by someone else
+        new_username = request.form.get("username")
+        taken = User.query.filter_by(username=new_username).first()
+        if taken and taken.id != current_user.id:
+            flash("That username is already taken.", "danger")
+            return redirect("/profile")
+        current_user.username = new_username
+        session["username"] = new_username   # keep the navbar "Hi, ..." in sync
         current_user.contact_number = request.form.get("contact_number")
         new_password = request.form.get("new_password")
         if new_password != "":

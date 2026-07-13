@@ -41,6 +41,10 @@
 
       <form action="/profile" method="post">
         <div class="field">
+          <label>Username</label>
+          <input type="text" name="username" value="{{ current_user.username }}" required>
+        </div>
+        <div class="field">
           <label>Contact Number</label>
           <input type="text" name="contact_number"
                  value="{% if current_user.contact_number %}{{ current_user.contact_number }}{% endif %}">
