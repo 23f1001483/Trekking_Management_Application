@@ -16,7 +16,7 @@ A role-based web platform designed to digitise and streamline outdoor adventure 
 
 - Flask (routes + session based login)
 - Flask-SQLAlchemy with SQLite (3 tables: User, Trek, Booking)
-- Jinja2 templates + Bootstrap 5 (CSS from CDN, no JavaScript used)
+- Jinja2 templates and CSS styling.
 
 ## How to run
 
