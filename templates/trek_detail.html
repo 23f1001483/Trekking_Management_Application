@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>{{ trek.name }} - Alpitude</title>
+  <link rel="stylesheet" href="/static/alpitude.css">
+</head>
+<body class="app-bg">
+
+  <nav class="site-nav">
+    <a class="brandmark" href="/user">
+      <img src="/static/alpitude.svg" alt="logo">
+      <span>Alpitude</span>
+    </a>
+    <div class="nav-links">
+      <a href="/user">Explore</a>
+      <a href="/user/bookings">My Bookings</a>
+      <a href="/user/history">History</a>
+      <a href="/profile">Profile</a>
+    </div>
+    <div class="nav-right">
+      <span>Hi, {{ session.get('username') }}</span>
+      <a class="btn btn-sm btn-grey" href="/logout">Logout</a>
+    </div>
+  </nav>
+
+  <div class="page page-narrow">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        <div class="notice notice-{{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endwith %}
+
+    <div class="panel">
+      <h3>{{ trek.name }}</h3>
+      <p><strong>Location:</strong> {{ trek.location }}</p>
+      <p><strong>Difficulty:</strong> {{ trek.difficulty }}</p>
+      <p><strong>Duration:</strong> {{ trek.duration_days }} days</p>
+      <p><strong>Dates:</strong> {{ trek.start_date }} to {{ trek.end_date }}</p>
+      <p><strong>Status:</strong> {{ trek.status }}</p>
+      <p><strong>Slots Left:</strong> {{ trek.available_slots }}</p>
+      <p><strong>Trek Guide:</strong>
+        {% if trek.staff %}{{ trek.staff.username }}{% else %}Not assigned yet{% endif %}
+      </p>
+      <p><strong>Description:</strong> {{ trek.description }}</p>
+
+      {% if already_booked %}
+        <div class="notice notice-success">You have already booked this trek.</div>
+      {% elif trek.status != 'Open' or trek.available_slots < 1 %}
+        <div class="notice notice-warning">This trek is not open for booking right now.</div>
+      {% else %}
+        <form action="/trek/{{ trek.id }}/book" method="post" class="inline-form">
+          <input type="submit" class="btn btn-green" value="Book Now">
+        </form>
+      {% endif %}
+      <a href="/user" class="btn btn-grey">Back</a>
+    </div>
+
+  </div>
+</body>
+</html>

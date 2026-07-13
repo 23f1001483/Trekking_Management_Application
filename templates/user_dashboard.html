@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Explore Treks - Alpitude</title>
+  <link rel="stylesheet" href="/static/alpitude.css">
+</head>
+<body class="app-bg">
+
+  <nav class="site-nav">
+    <a class="brandmark" href="/user">
+      <img src="/static/alpitude.svg" alt="logo">
+      <span>Alpitude</span>
+    </a>
+    <div class="nav-links">
+      <a class="active" href="/user">Explore</a>
+      <a href="/user/bookings">My Bookings</a>
+      <a href="/user/history">History</a>
+      <a href="/profile">Profile</a>
+    </div>
+    <div class="nav-right">
+      <span>Hi, {{ session.get('username') }}</span>
+      <a class="btn btn-sm btn-grey" href="/logout">Logout</a>
+    </div>
+  </nav>
+
+  <div class="page">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        <div class="notice notice-{{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endwith %}
+
+    <h3 class="page-title">Available Treks</h3>
+
+    <div class="panel gap-below">
+      <form action="/user" method="get" class="form-row">
+        <div class="field">
+          <label>Search</label>
+          <input type="text" name="search" placeholder="Search by trek name or location..." value="{{ search }}">
+        </div>
+        <div class="field">
+          <label>&nbsp;</label>
+          <input type="submit" class="btn btn-green" value="Search">
+        </div>
+      </form>
+    </div>
+
+    <div class="panel gap-below">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Location</th>
+            <th>Difficulty</th>
+            <th>Duration</th>
+            <th>Slots Left</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for trek in open_treks %}
+          <tr>
+            <td>{{ trek.name }}</td>
+            <td>{{ trek.location }}</td>
+            <td>{{ trek.difficulty }}</td>
+            <td>{{ trek.duration_days }} days</td>
+            <td>{{ trek.available_slots }}</td>
+            <td><a href="/trek/{{ trek.id }}" class="btn btn-sm btn-blue">View / Book</a></td>
+          </tr>
+          {% else %}
+          <tr><td colspan="6">No open treks found.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="page-title">My Booked Treks</h3>
+    <div class="panel">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Trek</th>
+            <th>Trek Dates</th>
+            <th>Booked On</th>
+            <th>Trek Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for booking in my_bookings %}
+          <tr>
+            <td>{{ booking.trek.name }}</td>
+            <td>{{ booking.trek.start_date }} to {{ booking.trek.end_date }}</td>
+            <td>{{ booking.booking_date }}</td>
+            <td>{{ booking.trek.status }}</td>
+          </tr>
+          {% else %}
+          <tr><td colspan="4">You have not booked any trek yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</body>
+</html>

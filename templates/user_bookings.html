@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>My Bookings - Alpitude</title>
+  <link rel="stylesheet" href="/static/alpitude.css">
+</head>
+<body class="app-bg">
+
+  <nav class="site-nav">
+    <a class="brandmark" href="/user">
+      <img src="/static/alpitude.svg" alt="logo">
+      <span>Alpitude</span>
+    </a>
+    <div class="nav-links">
+      <a href="/user">Explore</a>
+      <a class="active" href="/user/bookings">My Bookings</a>
+      <a href="/user/history">History</a>
+      <a href="/profile">Profile</a>
+    </div>
+    <div class="nav-right">
+      <span>Hi, {{ session.get('username') }}</span>
+      <a class="btn btn-sm btn-grey" href="/logout">Logout</a>
+    </div>
+  </nav>
+
+  <div class="page">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        <div class="notice notice-{{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endwith %}
+
+    <h3 class="page-title">My Bookings</h3>
+
+    <div class="panel">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Trek</th>
+            <th>Location</th>
+            <th>Trek Dates</th>
+            <th>Booked On</th>
+            <th>Payment</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for booking in my_bookings %}
+          <tr>
+            <td>{{ booking.trek.name }}</td>
+            <td>{{ booking.trek.location }}</td>
+            <td>{{ booking.trek.start_date }} to {{ booking.trek.end_date }}</td>
+            <td>{{ booking.booking_date }}</td>
+            <td>{% if booking.payment_status %}Paid{% else %}Not paid{% endif %}</td>
+            <td>
+              <form action="/user/bookings/cancel/{{ booking.id }}" method="post" class="inline-form">
+                <input type="submit" class="btn btn-sm btn-red" value="Cancel">
+              </form>
+            </td>
+          </tr>
+          {% else %}
+          <tr><td colspan="6">You have no active bookings. <a href="/user">Explore treks</a></td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</body>
+</html>
