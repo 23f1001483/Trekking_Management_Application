@@ -245,17 +245,23 @@ def admin_search():
         return redirect("/login")
     query = request.args.get("query", "")
     category = request.args.get("category", "treks")
+    # if the search box holds a number, use it as the id to look for;
+    # otherwise use -1 (an id no row ever has) so only the name/email search applies
+    search_id = int(query) if query.isdigit() else -1
     results = []
     if query != "":
         if category == "treks":
             results = Trek.query.filter(db.or_(Trek.name.contains(query),
-                                               Trek.location.contains(query))).all()
+                                               Trek.location.contains(query),
+                                               Trek.id == search_id)).all()
         elif category == "staff":
             results = User.query.filter_by(role='staff').filter(
-                db.or_(User.username.contains(query), User.email.contains(query))).all()
+                db.or_(User.username.contains(query), User.email.contains(query),
+                       User.id == search_id)).all()
         else:
             results = User.query.filter_by(role='user').filter(
-                db.or_(User.username.contains(query), User.email.contains(query))).all()
+                db.or_(User.username.contains(query), User.email.contains(query),
+                       User.id == search_id)).all()
     return render_template("admin_search.html", results=results, query=query, category=category)
 
 
