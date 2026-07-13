@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Staff Dashboard - Alpitude</title>
+  <link rel="stylesheet" href="/static/alpitude.css">
+</head>
+<body class="app-bg">
+
+  <nav class="site-nav">
+    <a class="brandmark" href="/staff">
+      <img src="/static/alpitude.svg" alt="logo">
+      <span>Alpitude</span>
+    </a>
+    <div class="nav-links">
+      <a class="active" href="/staff">Dashboard</a>
+      <a href="/profile">Profile</a>
+    </div>
+    <div class="nav-right">
+      <span>Hi, {{ session.get('username') }}</span>
+      <a class="btn btn-sm btn-grey" href="/logout">Logout</a>
+    </div>
+  </nav>
+
+  <div class="page">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        <div class="notice notice-{{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endwith %}
+
+    <h3 class="page-title">Staff Dashboard</h3>
+
+    <div class="stat-row">
+      <div class="stat">
+        <h6>My Assigned Treks</h6>
+        <div class="num">{{ my_treks|length }}</div>
+      </div>
+      <div class="stat">
+        <h6>Total Participants</h6>
+        <div class="num">{{ total_participants }}</div>
+      </div>
+      <div class="stat">
+        <h6>My Open Treks</h6>
+        <div class="num">{{ open_treks }}</div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h5>My Treks</h5>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Location</th>
+            <th>Dates</th>
+            <th>Slots</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for trek in my_treks %}
+          <tr>
+            <td>{{ trek.name }}</td>
+            <td>{{ trek.location }}</td>
+            <td>{{ trek.start_date }} to {{ trek.end_date }}</td>
+            <td>{{ trek.available_slots }}</td>
+            <td>{{ trek.status }}</td>
+            <td><a href="/staff/trek/{{ trek.id }}" class="btn btn-sm btn-blue">Manage</a></td>
+          </tr>
+          {% else %}
+          <tr><td colspan="6">No treks have been assigned to you yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</body>
+</html>

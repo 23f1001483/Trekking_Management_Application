@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Manage Trek - Alpitude</title>
+  <link rel="stylesheet" href="/static/alpitude.css">
+</head>
+<body class="app-bg">
+
+  <nav class="site-nav">
+    <a class="brandmark" href="/staff">
+      <img src="/static/alpitude.svg" alt="logo">
+      <span>Alpitude</span>
+    </a>
+    <div class="nav-links">
+      <a href="/staff">Dashboard</a>
+      <a href="/profile">Profile</a>
+    </div>
+    <div class="nav-right">
+      <span>Hi, {{ session.get('username') }}</span>
+      <a class="btn btn-sm btn-grey" href="/logout">Logout</a>
+    </div>
+  </nav>
+
+  <div class="page">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}
+        <div class="notice notice-{{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endwith %}
+
+    <h3 class="page-title">Manage Trek: {{ trek.name }}</h3>
+
+    <div class="panel gap-below">
+      <p><strong>Location:</strong> {{ trek.location }}</p>
+      <p><strong>Difficulty:</strong> {{ trek.difficulty }}</p>
+      <p><strong>Duration:</strong> {{ trek.duration_days }} days</p>
+      <p><strong>Dates:</strong> {{ trek.start_date }} to {{ trek.end_date }}</p>
+      <p><strong>Status:</strong> {{ trek.status }}</p>
+      <p><strong>Available Slots:</strong> {{ trek.available_slots }}</p>
+      <p><strong>Description:</strong> {{ trek.description }}</p>
+    </div>
+
+    {% if trek.status != 'Completed' %}
+    <div class="panel gap-below">
+      <h5>Update Trek</h5>
+      <form action="/staff/trek/{{ trek.id }}/update" method="post" class="form-row">
+        <div class="field">
+          <label>Available Slots</label>
+          <input type="number" name="available_slots" required value="{{ trek.available_slots }}">
+        </div>
+        <div class="field">
+          <label>Status</label>
+          <select name="status">
+            <option value="Open" {% if trek.status == 'Open' %}selected{% endif %}>Open</option>
+            <option value="Closed" {% if trek.status == 'Closed' %}selected{% endif %}>Closed</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>&nbsp;</label>
+          <input type="submit" class="btn btn-blue" value="Update">
+        </div>
+      </form>
+    </div>
+    {% endif %}
+
+    <div class="panel gap-below">
+      <h5>Participants ({{ participants|length }})</h5>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Contact</th>
+            <th>Booking Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for booking in participants %}
+          <tr>
+            <td>{{ booking.user.username }}</td>
+            <td>{{ booking.user.email }}</td>
+            <td>{{ booking.user.contact_number }}</td>
+            <td>{{ booking.booking_date }}</td>
+          </tr>
+          {% else %}
+          <tr><td colspan="4">No participants have booked yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    {% if trek.status != 'Completed' %}
+    <form action="/staff/trek/{{ trek.id }}/complete" method="post">
+      <input type="submit" class="btn btn-amber" value="Mark Trek as Completed">
+    </form>
+    {% else %}
+    <div class="notice notice-success">This trek has been completed.</div>
+    {% endif %}
+
+  </div>
+</body>
+</html>
