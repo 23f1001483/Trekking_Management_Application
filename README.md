@@ -21,14 +21,13 @@ A role-based web platform designed to digitise and streamline outdoor adventure 
 ## How to run
 
 ```
+Create the virtual environment (named .venv)
+python -m venv .venv
+Activate the virtual environment
+.\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 python app.py
 ```
 
 Then open http://127.0.0.1:5000 in your browser.
 The database and the default admin account are created automatically on the first run.
-
-## Default admin login
-
-- Username: `admin`
-- Password: `1234`
