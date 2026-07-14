@@ -59,11 +59,11 @@
           </div>
           <div class="field">
             <label>Duration (days)</label>
-            <input type="number" name="duration_days" required value="{% if trek %}{{ trek.duration_days }}{% endif %}">
+            <input type="text" name="duration_days" inputmode="numeric" required value="{% if trek %}{{ trek.duration_days }}{% endif %}">
           </div>
           <div class="field">
             <label>Available Slots</label>
-            <input type="number" name="available_slots" required value="{% if trek %}{{ trek.available_slots }}{% endif %}">
+            <input type="text" name="available_slots" inputmode="numeric" required value="{% if trek %}{{ trek.available_slots }}{% endif %}">
           </div>
         </div>
 

@@ -115,7 +115,7 @@ def add_trek():
     if request.method == 'POST':
         duration_days = request.form.get("duration_days")
         available_slots = request.form.get("available_slots")
-        if not duration_days.isdigit() or not available_slots.isdigit():
+        if not duration_days or not available_slots or not duration_days.isdigit() or not available_slots.isdigit():
             flash("Duration and slots must be numbers.", "danger")
             return redirect("/admin/trek/add")
         staff_id = request.form.get("staff_id")
@@ -150,7 +150,7 @@ def edit_trek(trek_id):
     if request.method == 'POST':
         duration_days = request.form.get("duration_days")
         available_slots = request.form.get("available_slots")
-        if not duration_days.isdigit() or not available_slots.isdigit():
+        if not duration_days or not available_slots or not duration_days.isdigit() or not available_slots.isdigit():
             flash("Duration and slots must be numbers.", "danger")
             return redirect("/admin/trek/edit/" + str(trek_id))
         trek.name = request.form.get("name")
