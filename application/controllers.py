@@ -39,15 +39,23 @@ def login():
 @app.route("/signup", methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
-        username = request.form.get("username")
-        email = request.form.get("email")
-        password = request.form.get("password")
-        contact_number = request.form.get("contact_number")
+        username = request.form.get("username", "").strip()
+        email = request.form.get("email", "").strip()
+        password = request.form.get("password", "").strip()
+        contact_number = request.form.get("contact_number", "").strip()
         role = request.form.get("role")
-        # server-side check: no account with empty details
-        # (the model's nullable=False only blocks NULL, an empty string "" would still pass)
+
         if username == "" or email == "" or password == "":
             flash("Please fill in all the fields.", "danger")
+            return redirect("/signup")
+        if not (3 <= len(username) <= 16):
+            flash("Username must be between 3 and 16 characters long.", "danger")
+            return redirect("/signup")
+        if not (8 < len(password) < 16):
+            flash("Password must be more than 8 and less than 16 characters long.", "danger")
+            return redirect("/signup")
+        if username.lower() == password.lower():
+            flash("Your password cannot be the same as your username.", "danger")
             return redirect("/signup")
         if User.query.filter_by(username=username).first():
             flash("This username is already taken.", "danger")
